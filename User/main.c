@@ -1,6 +1,7 @@
 #include "stm32f10x.h"                  // Device header
 #include "OLED.h"
 #include "MyCar.h"
+#include "Motor.h"
 #include "IR.h"
 #include "HCSR04.h"
 #include "Delay.h"
@@ -31,6 +32,8 @@ uint8_t FollowDistMax=50;//跟随检测的最大距离
 uint8_t FollowDistMin=15;//跟随检测的最小距离
 
 char MyCar_Status[7][17];//小车状态的字串变量
+
+uint8_t TargetSetFlag;//PID控制目标值设置标记位
 
 /*
 采用有限状态机处理跟随模式的逻辑
@@ -82,15 +85,17 @@ int main(){
             OLED_ShowString(2,5,"-");
         else
             OLED_ShowString(2,5,"+");
-        OLED_ShowNum(2,6,Yaw,3);
+        OLED_ShowNum(2,6,fabs(Yaw),3);
         OLED_ShowNum(2,10,fabs(Yaw)*100,2);
         OLED_ShowSignedNum(3,7,Speed,3);
         if(ObstAvoModeFlag)
             OLED_ShowString(3,12,"ObAv");//前进/避障模式
         else if(FollowModeFlag)
             OLED_ShowString(3,12,"Folo");//跟随模式
-        else
-            OLED_ShowString(3,12,"    ");//左转、右转、后退、停车、关闭跟随后无其他操作 均归为空状态/模式
+        else{
+            OLED_ShowString(3,12,"None");//左转、右转、后退、停车、关闭跟随后无其他操作 均归为空状态/模式
+            TargetSetFlag=0;
+        }
         OLED_ShowSignedNum(4,7,Data.AccY,5);//单位：2g/32767
         
         /*HC05*/
@@ -214,14 +219,31 @@ int main(){
             MyCar_Status[1][2+i]=(Distance2/100 / main_Pow(10, 3 - i - 1) % 10 + '0');
         }
         if(ObstAvoModeFlag){//仅当避障模式时才执行下列逻辑
-            if(Distance1/100<Thre_Dist && Distance2/100>Thre_Dist)
+            if(Distance1/100<Thre_Dist && Distance2/100>Thre_Dist){
                 MyCar_TurnRight(Speed);
-            else if(Distance1/100>Thre_Dist && Distance2/100<Thre_Dist)
+                TargetSetFlag=0;
+            }
+            else if(Distance1/100>Thre_Dist && Distance2/100<Thre_Dist){
                 MyCar_TurnLeft(Speed);
-            else if(Distance1/100>Thre_Dist && Distance2/100>Thre_Dist)
-                MyCar_GoForward(Speed);
-            else if(Distance1/100<Thre_Dist && Distance2/100<Thre_Dist)
+                TargetSetFlag=0;
+            }
+            else if(Distance1/100>Thre_Dist && Distance2/100>Thre_Dist){
+                if(!TargetSetFlag){
+                    target=Yaw;
+                    Itotal=0;
+                    TargetSetFlag=1;
+                }
+                if(Speed>0){
+                    Motor_FL_SetSpeed(Speed+(int8_t)dpwm);
+                    Motor_BL_SetSpeed(Speed+(int8_t)dpwm);
+                    Motor_FR_SetSpeed(Speed);
+                    Motor_BR_SetSpeed(Speed);
+                }
+            }
+            else if(Distance1/100<Thre_Dist && Distance2/100<Thre_Dist){
                 MyCar_TurnRight(Speed);
+                TargetSetFlag=0;
+            }
         }
         else if(FollowModeFlag){//仅当跟随模式时才执行下列逻辑
             switch(FollowModeState){

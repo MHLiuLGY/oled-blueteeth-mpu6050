@@ -166,16 +166,37 @@ void DEFAULT_MPU_HZ_GET(void)//£¨5MS  200HZµ÷ÓÃÒ»ÏÂ£¬¸ø DEFAULT_MPU_HZ ÆµÂÊ±£³ÖÒ
     }
 }
 
-float yaw_acc_error = 0;
-static uint32_t ms_5 = 0; 
+float yaw_acc_error;//ÏßÐÔ»Ø¹é¼ÆËãMPU6050ÁãµãÆ«ÒÆÎó²îÖµ
+uint32_t ms_5;//5ms¼ÆÊý
+
+int16_t dpwm;      //PID¿ØÖÆµÃµ½µÄ×óÂÖpwmµ÷ÕûÁ¿
+float prviousYaw;  //¼ÇÂ¼ÉÏÒ»¸öÆ«º½½Ç
+float arr;         //Ô¤ÆÚÖµÓëÊµ¼ÊÖµµÄ²î
+float prvious_arr; //¼ÇÂ¼ÉÏÒ»¸öÔ¤ÆÚÖµÓëÊµ¼ÊÖµµÄ²î
+float Itotal;      //IµÄÀÛ¼ÓÖµ
+float P=0.5;       //±ÈÀýÏµÊý
+float I=0.3;       //»ý·ÖÏµÊý
+float D=3;         //Î¢·ÖÏµÊý
+
+float target;      //¿ØÖÆÄ¿±ê
 
 void TIM1_UP_IRQHandler(){
     if(TIM_GetITStatus(TIM1,TIM_IT_Update)==SET){
-        DEFAULT_MPU_HZ_GET();
+        prviousYaw=Yaw;
         
+        DEFAULT_MPU_HZ_GET();
         ms_5++;
         yaw_acc_error=ms_5*0.0000201645-0.48903838;//ÏßÐÔ»Ø¹é¼ÆËãMPU6050ÁãµãÆ«ÒÆ
         Yaw-=yaw_acc_error;
+        
+        /*pid£º±Õ»·¿ØÖÆÖ±ÏßÐÐÊ»*/
+        prvious_arr=prviousYaw-target;
+        arr=Yaw-target;
+        
+        Itotal+=arr;
+        Itotal=(Itotal>=20||Itotal<=-20) ? 0 : Itotal;
+        
+        dpwm=P*arr+I*Itotal+D*(arr-prvious_arr);
         
         TIM_ClearITPendingBit(TIM1,TIM_IT_Update);
     }

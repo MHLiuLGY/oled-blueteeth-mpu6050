@@ -24,10 +24,14 @@ void get_ms(unsigned long *time);
 #define q30  1073741824.0f
 
 extern float Pitch,Roll,Yaw;
+extern int16_t dpwm;
+extern float target;
+extern float Itotal;
 extern short gyro[3], accel[3];
 extern uint8_t mpu6050_flag;
 
 uint8_t MPU6050_DMP_Init(void);
+void MPU6050_DMP_SetTarget(float target0);
 void DEFAULT_MPU_HZ_GET(void);
 
 #endif

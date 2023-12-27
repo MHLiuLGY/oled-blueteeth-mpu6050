@@ -761,26 +761,6 @@
               <FilePath>.\Hardware\MyCar.h</FilePath>
             </File>
             <File>
-              <FileName>KLM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Hardware\KLM.c</FilePath>
-            </File>
-            <File>
-              <FileName>KLM.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Hardware\KLM.h</FilePath>
-            </File>
-            <File>
-              <FileName>IMU.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Hardware\IMU.c</FilePath>
-            </File>
-            <File>
-              <FileName>IMU.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Hardware\IMU.h</FilePath>
-            </File>
-            <File>
               <FileName>HC05.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Hardware\HC05.c</FilePath>
