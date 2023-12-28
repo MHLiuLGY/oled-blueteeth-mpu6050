@@ -174,7 +174,7 @@ float prviousYaw;  //记录上一个偏航角
 float arr;         //预期值与实际值的差
 float prvious_arr; //记录上一个预期值与实际值的差
 float Itotal;      //I的累加值
-float P=0.5;       //比例系数
+float P=2;       //比例系数
 float I=0.3;       //积分系数
 float D=3;         //微分系数
 
