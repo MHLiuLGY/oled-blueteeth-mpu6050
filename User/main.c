@@ -236,8 +236,8 @@ int main(){
                 if(Speed>0){
                     Motor_FL_SetSpeed(Speed+(int8_t)dpwm);
                     Motor_BL_SetSpeed(Speed+(int8_t)dpwm);
-                    Motor_FR_SetSpeed(Speed);
-                    Motor_BR_SetSpeed(Speed);
+                    Motor_FR_SetSpeed(Speed-(int8_t)dpwm);
+                    Motor_BR_SetSpeed(Speed-(int8_t)dpwm);
                 }
             }
             else if(Distance1/100<Thre_Dist && Distance2/100<Thre_Dist){

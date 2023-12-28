@@ -169,12 +169,12 @@ void DEFAULT_MPU_HZ_GET(void)//£¨5MS  200HZµ÷ÓÃÒ»ÏÂ£¬¸ø DEFAULT_MPU_HZ ÆµÂÊ±£³ÖÒ
 float yaw_acc_error;//ÏßĞÔ»Ø¹é¼ÆËãMPU6050ÁãµãÆ«ÒÆÎó²îÖµ
 uint32_t ms_5;//5ms¼ÆÊı
 
-int16_t dpwm;      //PID¿ØÖÆµÃµ½µÄ×óÂÖpwmµ÷ÕûÁ¿
+int16_t dpwm;      //PID¿ØÖÆµÃµ½µÄ×óÓÒÂÖpwmµ÷ÕûÁ¿
 float prviousYaw;  //¼ÇÂ¼ÉÏÒ»¸öÆ«º½½Ç
 float arr;         //Ô¤ÆÚÖµÓëÊµ¼ÊÖµµÄ²î
 float prvious_arr; //¼ÇÂ¼ÉÏÒ»¸öÔ¤ÆÚÖµÓëÊµ¼ÊÖµµÄ²î
 float Itotal;      //IµÄÀÛ¼ÓÖµ
-float P=2;       //±ÈÀıÏµÊı
+float P=1;         //±ÈÀıÏµÊı
 float I=0.3;       //»ı·ÖÏµÊı
 float D=3;         //Î¢·ÖÏµÊı
 
