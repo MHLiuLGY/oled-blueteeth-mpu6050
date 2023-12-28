@@ -86,7 +86,7 @@ void EXTI2_IRQHandler(){
 				IR_State=1;
 				break;
 			}
-			case 1:{//第2个下降沿，判断开始或重复。若判断为开始，进入状态2；若判断为重复，该帧结束，回到状态0
+			case 1:{//第2个下降沿，判断开始或重复。若判断为开始，进入状态2；若判断为重复，该帧结束，回到状态1
 				IR_Time=IRTimer_GetCounter();
 				TIM_SetCounter(TIM2,0);//不关闭计时器，且开始新的计时
 				if(IR_Time>13500-500 && IR_Time<13500+500){
@@ -100,7 +100,7 @@ void EXTI2_IRQHandler(){
 				}
 				break;
 			}
-			case 2:{//第3个至n个下降沿，判断高低电平。若判断最后一位存储完毕，该帧结束，回到状态0
+			case 2:{//第3个至n个下降沿，判断高低电平。若判断最后一位存储完毕，该帧结束，回到状态1
 				IR_Time=IRTimer_GetCounter();
 				TIM_SetCounter(TIM2,0);
 				if(IR_Time>1120-500 && IR_Time<1120+500){
